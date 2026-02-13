@@ -7,7 +7,7 @@
 <style>
 body{
     margin:0;
-    font-family:'Comic Sans MS',cursive;
+    font-family:'Comic Sans MS', cursive;
     background:linear-gradient(#ff9a9e,#fad0c4);
     text-align:center;
     overflow-x:hidden;
@@ -54,14 +54,14 @@ input,textarea{
 }
 
 img{
-    width:180px;
-    height:180px;
+    width:90px;
+    height:90px;
     object-fit:cover;
-    border-radius:20px;
-    margin:10px;
+    border-radius:15px;
+    margin:5px;
 }
 
-/* Floating Hearts */
+/* Floating hearts */
 .heart{
     position:fixed;
     bottom:-20px;
@@ -73,10 +73,10 @@ img{
     to{transform:translateY(-100vh);opacity:0;}
 }
 
-/* No Button */
+/* No button */
 #noBtn{position:absolute;}
 
-/* Celebration */
+/* Celebration screen */
 #celebrate{
     position:fixed;
     inset:0;
@@ -94,34 +94,25 @@ img{
 
 <body>
 
-<!-- MUSIC -->
+<!-- Background Music -->
 <audio id="bgMusic" loop>
 <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
 </audio>
 
-<!-- QR SCREEN -->
-<div class="container" id="qrScreen">
-<h1>📱 Scan to Unlock My Heart 💖</h1>
-<p>Scan or click the QR to continue</p>
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=YOUR_LINK_HERE">
-<br><br>
-<button onclick="openPassword()">Continue 💌</button>
-</div>
-
-<!-- PASSWORD SCREEN -->
-<div class="container hidden" id="passwordScreen">
+<!-- Password Screen -->
+<div class="container" id="passwordScreen">
 <h1>🔐 Secret Valentine File</h1>
-<p>Enter the secret password 💖</p>
-<input type="password" id="password" placeholder="Password">
+<input type="password" id="password" placeholder="Enter Password">
 <br><br>
-<button onclick="checkPassword()">Open 💌</button>
+<button onclick="checkPassword()">Open 💖</button>
 </div>
 
-<!-- MAIN CONTENT -->
+<!-- Main Content -->
 <div class="container hidden" id="mainContent">
 
 <h1>Happy Valentine's Day 💕</h1>
 
+<!-- Love Letter -->
 <div class="card">
 <h2>💌 Love Letter</h2>
 <button onclick="toggle('letter')">Open 💌</button>
@@ -130,6 +121,7 @@ img{
 </div>
 </div>
 
+<!-- Day We Met -->
 <div class="card">
 <h2>📜 Day We Met</h2>
 <button onclick="toggle('met')">Open 📜</button>
@@ -138,6 +130,7 @@ img{
 </div>
 </div>
 
+<!-- Memories -->
 <div class="card">
 <h2>📸 Our Memories</h2>
 <button onclick="toggle('memories')">Open 📸</button>
@@ -147,6 +140,7 @@ img{
 </div>
 </div>
 
+<!-- Love Journey -->
 <div class="card">
 <h2>💞 Love Journey Start</h2>
 <button onclick="toggle('journey')">Open 💞</button>
@@ -155,6 +149,7 @@ img{
 </div>
 </div>
 
+<!-- Dreams -->
 <div class="card">
 <h2>🌈 Our Dreams</h2>
 <button onclick="toggle('dreams')">Open 🌈</button>
@@ -163,6 +158,14 @@ img{
 </div>
 </div>
 
+<!-- QR Code -->
+<div class="card">
+<h2>📱 Scan to Open My Heart</h2>
+<p>(Replace YOUR_LINK_HERE after hosting)</p>
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=YOUR_LINK_HERE">
+</div>
+
+<!-- Final Question -->
 <div class="card">
 <h2>💍 Will you be my Valentine?</h2>
 <button onclick="yesClick()">Yes 💖</button>
@@ -171,40 +174,21 @@ img{
 
 </div>
 
-<!-- CELEBRATION -->
+<!-- Celebration -->
 <div id="celebrate">
 <h1>💍 She Said YES 💖</h1>
 <p>Forever starts now ✨</p>
 </div>
 
 <script>
-/* QR TO PASSWORD */
-function openPassword(){
-    qrScreen.classList.add("hidden");
-    passwordScreen.classList.remove("hidden");
-}
-
-/* SET PASSWORD FIRST TIME */
-let savedPassword = localStorage.getItem("valentinePassword");
-if(!savedPassword){
-    let newPass = prompt("Set your Valentine website password 💖");
-    if(newPass){
-        localStorage.setItem("valentinePassword", newPass);
-        alert("Password saved successfully 💕");
-    }
-}
-
-/* CHECK PASSWORD */
 function checkPassword(){
-    let inputPass = password.value;
-    let realPass = localStorage.getItem("valentinePassword");
-    if(inputPass === realPass){
+    if (password.value === "valentine") {
         passwordScreen.classList.add("hidden");
         mainContent.classList.remove("hidden");
-        bgMusic.play();
-        setInterval(createHeart,400);
+        bgMusic.play().catch(()=>{});
+        setInterval(createHeart, 400);
     } else {
-        alert("Wrong password 💔 Try again");
+        alert("Wrong password 💔");
     }
 }
 
@@ -228,7 +212,7 @@ function moveNo(){
 
 function yesClick(){
     celebrate.style.display="flex";
-    for(let i=0;i<40;i++) createHeart();
+    for(let i=0;i<40;i++)createHeart();
 }
 
 function createHeart(){
@@ -241,7 +225,7 @@ function createHeart(){
     setTimeout(()=>h.remove(),5000);
 }
 
-/* AUTO SAVE */
+/* Auto-save text & date */
 document.addEventListener("input",()=>{
     document.querySelectorAll("textarea,input").forEach(el=>{
         localStorage.setItem(el.placeholder||el.type,el.value);
@@ -251,7 +235,7 @@ document.addEventListener("input",()=>{
 window.onload=()=>{
     document.querySelectorAll("textarea,input").forEach(el=>{
         let v=localStorage.getItem(el.placeholder||el.type);
-        if(v) el.value=v;
+        if(v)el.value=v;
     });
 };
 </script>
