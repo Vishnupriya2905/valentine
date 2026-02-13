@@ -2,242 +2,212 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Valentine 💖</title>
 
 <style>
+*{box-sizing:border-box;}
 body{
     margin:0;
-    font-family:'Comic Sans MS', cursive;
+    font-family:'Comic Sans MS',cursive;
     background:linear-gradient(#ff9a9e,#fad0c4);
     text-align:center;
     overflow-x:hidden;
 }
-.hidden{display:none;}
-.container{padding:30px;}
-h1,h2{color:#b30059;}
-
+section{
+    min-height:100vh;
+    padding:30px 10px;
+}
+h1,h2{color:white;}
+.card{
+    background:rgba(255,255,255,0.2);
+    padding:20px;
+    border-radius:25px;
+    max-width:360px;
+    margin:auto;
+}
 button{
     padding:12px 25px;
-    background:#ff3366;
-    color:white;
     border:none;
-    border-radius:25px;
+    border-radius:30px;
+    background:#ff4d6d;
+    color:white;
     font-size:16px;
     cursor:pointer;
-    transition:0.3s;
 }
-button:hover{transform:scale(1.1);}
-
-.card{
-    background:white;
-    margin:20px auto;
-    padding:20px;
-    width:85%;
-    max-width:500px;
-    border-radius:20px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.2);
-}
-
-.letter{
-    background:#fff0f5;
-    padding:20px;
-    border-radius:15px;
-    border:2px dashed #ff66a3;
-}
-
-input,textarea{
+textarea,input{
     width:90%;
     padding:10px;
+    border-radius:12px;
+    border:none;
     margin:8px 0;
-    border-radius:10px;
-    border:1px solid #ccc;
 }
-
-img{
-    width:90px;
-    height:90px;
+.hidden{display:none;}
+img.preview{
+    width:80px;height:80px;
     object-fit:cover;
-    border-radius:15px;
+    border-radius:10px;
     margin:5px;
 }
 
-/* Floating hearts */
+/* Hearts */
 .heart{
     position:fixed;
-    bottom:-20px;
-    color:#ff3366;
-    animation:floatUp 5s linear infinite;
+    bottom:-10px;
+    animation:float 6s linear infinite;
 }
-@keyframes floatUp{
-    from{transform:translateY(0);opacity:1;}
+@keyframes float{
     to{transform:translateY(-100vh);opacity:0;}
 }
 
-/* No button */
-#noBtn{position:absolute;}
-
-/* Celebration screen */
-#celebrate{
+/* Confetti */
+.confetti{
     position:fixed;
-    inset:0;
-    background:linear-gradient(#ff758c,#ff7eb3);
-    display:none;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    color:white;
-    font-size:28px;
-    z-index:999;
+    width:10px;
+    height:10px;
+    top:0;
+    animation:fall 3s linear forwards;
+}
+@keyframes fall{
+    to{transform:translateY(100vh) rotate(360deg);}
 }
 </style>
 </head>
 
 <body>
 
-<!-- Background Music -->
-<audio id="bgMusic" loop>
-<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
+<!-- 🎵 Music -->
+<audio id="music" loop>
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_0e6c8a66d2.mp3">
 </audio>
 
-<!-- Password Screen -->
-<div class="container" id="passwordScreen">
-<h1>🔐 Secret Valentine File</h1>
-<input type="password" id="password" placeholder="Enter Password">
-<br><br>
-<button onclick="checkPassword()">Open 💖</button>
-</div>
-
-<!-- Main Content -->
-<div class="container hidden" id="mainContent">
-
-<h1>Happy Valentine's Day 💕</h1>
-
-<!-- Love Letter -->
+<!-- 🌸 FIRST SHEET -->
+<section id="home">
 <div class="card">
-<h2>💌 Love Letter</h2>
-<button onclick="toggle('letter')">Open 💌</button>
-<div id="letter" class="hidden letter">
-<textarea placeholder="Write your love letter here..."></textarea>
-</div>
-</div>
+<h1>💖 Happy Valentine's Day 💖</h1>
+<h2>Chandhu</h2>
+<p><i>"My heart beats only for you."</i></p>
 
-<!-- Day We Met -->
-<div class="card">
-<h2>📜 Day We Met</h2>
-<button onclick="toggle('met')">Open 📜</button>
-<div id="met" class="hidden letter">
-<textarea placeholder="Describe the day we met..."></textarea>
-</div>
-</div>
+<button onclick="startLove()">❤️ Shower me with Love</button>
 
-<!-- Memories -->
-<div class="card">
-<h2>📸 Our Memories</h2>
-<button onclick="toggle('memories')">Open 📸</button>
-<div id="memories" class="hidden">
-<input type="file" accept="image/*" multiple onchange="previewImages(event)">
+<p>We've been in love for</p>
+<h2 id="days">0 days</h2>
+</div>
+</section>
+
+<!-- 💌 LOVE LETTER -->
+<section id="letter" class="hidden">
+<h1>💌 Love Letter</h1>
+<textarea id="loveLetter" placeholder="Write your love letter..."></textarea>
+<button onclick="next('memories')">Next 💕</button>
+</section>
+
+<!-- 📸 MEMORIES -->
+<section id="memories" class="hidden">
+<h1>📸 Memories</h1>
+<input type="file" accept="image/*" multiple onchange="loadImages(event)">
 <div id="gallery"></div>
-</div>
-</div>
+<button onclick="next('date')">Next 💕</button>
+</section>
 
-<!-- Love Journey -->
-<div class="card">
-<h2>💞 Love Journey Start</h2>
-<button onclick="toggle('journey')">Open 💞</button>
-<div id="journey" class="hidden">
-<input type="date">
-</div>
-</div>
+<!-- 📅 DATE -->
+<section id="date" class="hidden">
+<h1>📅 Love Journey Started</h1>
+<input type="date" id="loveDate">
+<button onclick="next('dreams')">Next 💕</button>
+</section>
 
-<!-- Dreams -->
-<div class="card">
-<h2>🌈 Our Dreams</h2>
-<button onclick="toggle('dreams')">Open 🌈</button>
-<div id="dreams" class="hidden letter">
-<textarea placeholder="Write dreams and future plans..."></textarea>
-</div>
-</div>
+<!-- 🌈 DREAMS -->
+<section id="dreams" class="hidden">
+<h1>🌈 Dreams</h1>
+<textarea id="dreamText" placeholder="Our dreams together..."></textarea>
+<button onclick="next('question')">Next 💕</button>
+</section>
 
-<!-- QR Code -->
-<div class="card">
-<h2>📱 Scan to Open My Heart</h2>
-<p>(Replace YOUR_LINK_HERE after hosting)</p>
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=YOUR_LINK_HERE">
-</div>
-
-<!-- Final Question -->
-<div class="card">
-<h2>💍 Will you be my Valentine?</h2>
-<button onclick="yesClick()">Yes 💖</button>
-<button id="noBtn" onmouseover="moveNo()">No 🙈</button>
-</div>
-
-</div>
-
-<!-- Celebration -->
-<div id="celebrate">
-<h1>💍 She Said YES 💖</h1>
-<p>Forever starts now ✨</p>
-</div>
+<!-- 💖 QUESTION -->
+<section id="question" class="hidden">
+<h1>Will you be my Valentine? 💖</h1>
+<button onclick="yesClicked()">YES 💘</button>
+<button id="noBtn" onmouseover="moveNo()">NO 🙈</button>
+</section>
 
 <script>
-function checkPassword(){
-    if (password.value === "valentine") {
-        passwordScreen.classList.add("hidden");
-        mainContent.classList.remove("hidden");
-        bgMusic.play().catch(()=>{});
-        setInterval(createHeart, 400);
-    } else {
-        alert("Wrong password 💔");
-    }
+// Start
+function startLove(){
+    document.getElementById("music").play();
+    next("letter");
 }
 
-function toggle(id){
-    document.getElementById(id).classList.toggle("hidden");
+// Navigation
+function next(id){
+    document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+    document.getElementById(id).classList.remove("hidden");
+    window.scrollTo(0,0);
 }
 
-function previewImages(e){
-    gallery.innerHTML="";
-    [...e.target.files].slice(0,6).forEach(f=>{
-        let img=document.createElement("img");
-        img.src=URL.createObjectURL(f);
-        gallery.appendChild(img);
-    });
-}
+// Love counter
+const startDate=new Date("2022-01-01");
+setInterval(()=>{
+    let d=Math.floor((new Date()-startDate)/(1000*60*60*24));
+    days.innerText=d+" days";
+},1000);
 
-function moveNo(){
-    noBtn.style.left=Math.random()*80+"%";
-    noBtn.style.top=Math.random()*80+"%";
-}
-
-function yesClick(){
-    celebrate.style.display="flex";
-    for(let i=0;i<40;i++)createHeart();
-}
-
-function createHeart(){
+// Hearts
+setInterval(()=>{
     let h=document.createElement("div");
     h.className="heart";
     h.innerHTML="❤️";
     h.style.left=Math.random()*100+"vw";
-    h.style.fontSize=Math.random()*20+15+"px";
+    h.style.fontSize=(20+Math.random()*20)+"px";
     document.body.appendChild(h);
-    setTimeout(()=>h.remove(),5000);
+    setTimeout(()=>h.remove(),6000);
+},500);
+
+// Images
+function loadImages(e){
+    let files=[...e.target.files].slice(0,6);
+    gallery.innerHTML="";
+    files.forEach(f=>{
+        let r=new FileReader();
+        r.onload=()=>{
+            let img=document.createElement("img");
+            img.src=r.result;
+            img.className="preview";
+            gallery.appendChild(img);
+        }
+        r.readAsDataURL(f);
+    });
 }
 
-/* Auto-save text & date */
-document.addEventListener("input",()=>{
-    document.querySelectorAll("textarea,input").forEach(el=>{
-        localStorage.setItem(el.placeholder||el.type,el.value);
-    });
-});
+// Auto-save
+setInterval(()=>{
+    localStorage.setItem("letter",loveLetter.value);
+    localStorage.setItem("dream",dreamText.value);
+    localStorage.setItem("date",loveDate.value);
+},1000);
+loveLetter.value=localStorage.getItem("letter")||"";
+dreamText.value=localStorage.getItem("dream")||"";
+loveDate.value=localStorage.getItem("date")||"";
 
-window.onload=()=>{
-    document.querySelectorAll("textarea,input").forEach(el=>{
-        let v=localStorage.getItem(el.placeholder||el.type);
-        if(v)el.value=v;
-    });
-};
+// YES
+function yesClicked(){
+    for(let i=0;i<120;i++){
+        let c=document.createElement("div");
+        c.className="confetti";
+        c.style.left=Math.random()*100+"vw";
+        c.style.background=`hsl(${Math.random()*360},100%,50%)`;
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),3000);
+    }
+    alert("💖 Happy Valentine’s Day 💖");
+}
+
+// NO button runs
+function moveNo(){
+    noBtn.style.position="absolute";
+    noBtn.style.left=Math.random()*80+"%";
+    noBtn.style.top=Math.random()*80+"%";
+}
 </script>
 
 </body>
