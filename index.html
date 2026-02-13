@@ -2,11 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Valentine 💖</title>
 
 <style>
-*{box-sizing:border-box;}
 body{
     margin:0;
     font-family:'Comic Sans MS',cursive;
@@ -14,200 +12,248 @@ body{
     text-align:center;
     overflow-x:hidden;
 }
-section{
-    min-height:100vh;
-    padding:30px 10px;
-}
-h1,h2{color:white;}
-.card{
-    background:rgba(255,255,255,0.2);
-    padding:20px;
-    border-radius:25px;
-    max-width:360px;
-    margin:auto;
-}
+.hidden{display:none;}
+.container{padding:30px;}
+h1,h2{color:#b30059;}
+
 button{
     padding:12px 25px;
-    border:none;
-    border-radius:30px;
-    background:#ff4d6d;
+    background:#ff3366;
     color:white;
+    border:none;
+    border-radius:25px;
     font-size:16px;
     cursor:pointer;
+    transition:0.3s;
 }
-textarea,input{
-    width:90%;
-    padding:10px;
-    border-radius:12px;
-    border:none;
-    margin:8px 0;
-}
-.hidden{display:none;}
-img.preview{
-    width:80px;height:80px;
-    object-fit:cover;
-    border-radius:10px;
-    margin:5px;
+button:hover{transform:scale(1.1);}
+
+.card{
+    background:white;
+    margin:20px auto;
+    padding:20px;
+    width:85%;
+    max-width:500px;
+    border-radius:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
 }
 
-/* Hearts */
+.letter{
+    background:#fff0f5;
+    padding:20px;
+    border-radius:15px;
+    border:2px dashed #ff66a3;
+}
+
+input,textarea{
+    width:90%;
+    padding:10px;
+    margin:8px 0;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+
+img{
+    width:180px;
+    height:180px;
+    object-fit:cover;
+    border-radius:20px;
+    margin:10px;
+}
+
+/* Floating Hearts */
 .heart{
     position:fixed;
-    bottom:-10px;
-    animation:float 6s linear infinite;
+    bottom:-20px;
+    color:#ff3366;
+    animation:floatUp 5s linear infinite;
 }
-@keyframes float{
+@keyframes floatUp{
+    from{transform:translateY(0);opacity:1;}
     to{transform:translateY(-100vh);opacity:0;}
 }
 
-/* Confetti */
-.confetti{
+/* No Button */
+#noBtn{position:absolute;}
+
+/* Celebration */
+#celebrate{
     position:fixed;
-    width:10px;
-    height:10px;
-    top:0;
-    animation:fall 3s linear forwards;
-}
-@keyframes fall{
-    to{transform:translateY(100vh) rotate(360deg);}
+    inset:0;
+    background:linear-gradient(#ff758c,#ff7eb3);
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    font-size:28px;
+    z-index:999;
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🎵 Music -->
-<audio id="music" loop>
-<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_0e6c8a66d2.mp3">
+<!-- MUSIC -->
+<audio id="bgMusic" loop>
+<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
 </audio>
 
-<!-- 🌸 FIRST SHEET -->
-<section id="home">
-<div class="card">
-<h1>💖 Happy Valentine's Day 💖</h1>
-<h2>Chandhu</h2>
-<p><i>"My heart beats only for you."</i></p>
-
-<button onclick="startLove()">❤️ Shower me with Love</button>
-
-<p>We've been in love for</p>
-<h2 id="days">0 days</h2>
+<!-- QR SCREEN -->
+<div class="container" id="qrScreen">
+<h1>📱 Scan to Unlock My Heart 💖</h1>
+<p>Scan or click the QR to continue</p>
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=YOUR_LINK_HERE">
+<br><br>
+<button onclick="openPassword()">Continue 💌</button>
 </div>
-</section>
 
-<!-- 💌 LOVE LETTER -->
-<section id="letter" class="hidden">
-<h1>💌 Love Letter</h1>
-<textarea id="loveLetter" placeholder="Write your love letter..."></textarea>
-<button onclick="next('memories')">Next 💕</button>
-</section>
+<!-- PASSWORD SCREEN -->
+<div class="container hidden" id="passwordScreen">
+<h1>🔐 Secret Valentine File</h1>
+<p>Enter the secret password 💖</p>
+<input type="password" id="password" placeholder="Password">
+<br><br>
+<button onclick="checkPassword()">Open 💌</button>
+</div>
 
-<!-- 📸 MEMORIES -->
-<section id="memories" class="hidden">
-<h1>📸 Memories</h1>
-<input type="file" accept="image/*" multiple onchange="loadImages(event)">
+<!-- MAIN CONTENT -->
+<div class="container hidden" id="mainContent">
+
+<h1>Happy Valentine's Day 💕</h1>
+
+<div class="card">
+<h2>💌 Love Letter</h2>
+<button onclick="toggle('letter')">Open 💌</button>
+<div id="letter" class="hidden letter">
+<textarea placeholder="Write your love letter here..."></textarea>
+</div>
+</div>
+
+<div class="card">
+<h2>📜 Day We Met</h2>
+<button onclick="toggle('met')">Open 📜</button>
+<div id="met" class="hidden letter">
+<textarea placeholder="Describe the day we met..."></textarea>
+</div>
+</div>
+
+<div class="card">
+<h2>📸 Our Memories</h2>
+<button onclick="toggle('memories')">Open 📸</button>
+<div id="memories" class="hidden">
+<input type="file" accept="image/*" multiple onchange="previewImages(event)">
 <div id="gallery"></div>
-<button onclick="next('date')">Next 💕</button>
-</section>
+</div>
+</div>
 
-<!-- 📅 DATE -->
-<section id="date" class="hidden">
-<h1>📅 Love Journey Started</h1>
-<input type="date" id="loveDate">
-<button onclick="next('dreams')">Next 💕</button>
-</section>
+<div class="card">
+<h2>💞 Love Journey Start</h2>
+<button onclick="toggle('journey')">Open 💞</button>
+<div id="journey" class="hidden">
+<input type="date">
+</div>
+</div>
 
-<!-- 🌈 DREAMS -->
-<section id="dreams" class="hidden">
-<h1>🌈 Dreams</h1>
-<textarea id="dreamText" placeholder="Our dreams together..."></textarea>
-<button onclick="next('question')">Next 💕</button>
-</section>
+<div class="card">
+<h2>🌈 Our Dreams</h2>
+<button onclick="toggle('dreams')">Open 🌈</button>
+<div id="dreams" class="hidden letter">
+<textarea placeholder="Write dreams and future plans..."></textarea>
+</div>
+</div>
 
-<!-- 💖 QUESTION -->
-<section id="question" class="hidden">
-<h1>Will you be my Valentine? 💖</h1>
-<button onclick="yesClicked()">YES 💘</button>
-<button id="noBtn" onmouseover="moveNo()">NO 🙈</button>
-</section>
+<div class="card">
+<h2>💍 Will you be my Valentine?</h2>
+<button onclick="yesClick()">Yes 💖</button>
+<button id="noBtn" onmouseover="moveNo()">No 🙈</button>
+</div>
+
+</div>
+
+<!-- CELEBRATION -->
+<div id="celebrate">
+<h1>💍 She Said YES 💖</h1>
+<p>Forever starts now ✨</p>
+</div>
 
 <script>
-// Start
-function startLove(){
-    document.getElementById("music").play();
-    next("letter");
+/* QR TO PASSWORD */
+function openPassword(){
+    qrScreen.classList.add("hidden");
+    passwordScreen.classList.remove("hidden");
 }
 
-// Navigation
-function next(id){
-    document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
-    document.getElementById(id).classList.remove("hidden");
-    window.scrollTo(0,0);
+/* SET PASSWORD FIRST TIME */
+let savedPassword = localStorage.getItem("valentinePassword");
+if(!savedPassword){
+    let newPass = prompt("Set your Valentine website password 💖");
+    if(newPass){
+        localStorage.setItem("valentinePassword", newPass);
+        alert("Password saved successfully 💕");
+    }
 }
 
-// Love counter
-const startDate=new Date("2022-01-01");
-setInterval(()=>{
-    let d=Math.floor((new Date()-startDate)/(1000*60*60*24));
-    days.innerText=d+" days";
-},1000);
+/* CHECK PASSWORD */
+function checkPassword(){
+    let inputPass = password.value;
+    let realPass = localStorage.getItem("valentinePassword");
+    if(inputPass === realPass){
+        passwordScreen.classList.add("hidden");
+        mainContent.classList.remove("hidden");
+        bgMusic.play();
+        setInterval(createHeart,400);
+    } else {
+        alert("Wrong password 💔 Try again");
+    }
+}
 
-// Hearts
-setInterval(()=>{
+function toggle(id){
+    document.getElementById(id).classList.toggle("hidden");
+}
+
+function previewImages(e){
+    gallery.innerHTML="";
+    [...e.target.files].slice(0,6).forEach(f=>{
+        let img=document.createElement("img");
+        img.src=URL.createObjectURL(f);
+        gallery.appendChild(img);
+    });
+}
+
+function moveNo(){
+    noBtn.style.left=Math.random()*80+"%";
+    noBtn.style.top=Math.random()*80+"%";
+}
+
+function yesClick(){
+    celebrate.style.display="flex";
+    for(let i=0;i<40;i++) createHeart();
+}
+
+function createHeart(){
     let h=document.createElement("div");
     h.className="heart";
     h.innerHTML="❤️";
     h.style.left=Math.random()*100+"vw";
-    h.style.fontSize=(20+Math.random()*20)+"px";
+    h.style.fontSize=Math.random()*20+15+"px";
     document.body.appendChild(h);
-    setTimeout(()=>h.remove(),6000);
-},500);
+    setTimeout(()=>h.remove(),5000);
+}
 
-// Images
-function loadImages(e){
-    let files=[...e.target.files].slice(0,6);
-    gallery.innerHTML="";
-    files.forEach(f=>{
-        let r=new FileReader();
-        r.onload=()=>{
-            let img=document.createElement("img");
-            img.src=r.result;
-            img.className="preview";
-            gallery.appendChild(img);
-        }
-        r.readAsDataURL(f);
+/* AUTO SAVE */
+document.addEventListener("input",()=>{
+    document.querySelectorAll("textarea,input").forEach(el=>{
+        localStorage.setItem(el.placeholder||el.type,el.value);
     });
-}
+});
 
-// Auto-save
-setInterval(()=>{
-    localStorage.setItem("letter",loveLetter.value);
-    localStorage.setItem("dream",dreamText.value);
-    localStorage.setItem("date",loveDate.value);
-},1000);
-loveLetter.value=localStorage.getItem("letter")||"";
-dreamText.value=localStorage.getItem("dream")||"";
-loveDate.value=localStorage.getItem("date")||"";
-
-// YES
-function yesClicked(){
-    for(let i=0;i<120;i++){
-        let c=document.createElement("div");
-        c.className="confetti";
-        c.style.left=Math.random()*100+"vw";
-        c.style.background=`hsl(${Math.random()*360},100%,50%)`;
-        document.body.appendChild(c);
-        setTimeout(()=>c.remove(),3000);
-    }
-    alert("💖 Happy Valentine’s Day 💖");
-}
-
-// NO button runs
-function moveNo(){
-    noBtn.style.position="absolute";
-    noBtn.style.left=Math.random()*80+"%";
-    noBtn.style.top=Math.random()*80+"%";
-}
+window.onload=()=>{
+    document.querySelectorAll("textarea,input").forEach(el=>{
+        let v=localStorage.getItem(el.placeholder||el.type);
+        if(v) el.value=v;
+    });
+};
 </script>
 
 </body>
