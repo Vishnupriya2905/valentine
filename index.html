@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Valentine 💖</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Comic Sans MS',cursive;
+    background:linear-gradient(#ff9a9e,#fad0c4);
+    text-align:center;
+    overflow-x:hidden;
+}
+.hidden{display:none;}
+.container{padding:30px;}
+h1,h2{color:#b30059;}
+
+button{
+    padding:12px 25px;
+    background:#ff3366;
+    color:white;
+    border:none;
+    border-radius:25px;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+button:hover{transform:scale(1.1);}
+
+.card{
+    background:white;
+    margin:20px auto;
+    padding:20px;
+    width:85%;
+    max-width:500px;
+    border-radius:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+.letter{
+    background:#fff0f5;
+    padding:20px;
+    border-radius:15px;
+    border:2px dashed #ff66a3;
+}
+
+input,textarea{
+    width:90%;
+    padding:10px;
+    margin:8px 0;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+
+img{
+    width:180px;
+    height:180px;
+    object-fit:cover;
+    border-radius:20px;
+    margin:10px;
+}
+
+/* Floating Hearts */
+.heart{
+    position:fixed;
+    bottom:-20px;
+    color:#ff3366;
+    animation:floatUp 5s linear infinite;
+}
+@keyframes floatUp{
+    from{transform:translateY(0);opacity:1;}
+    to{transform:translateY(-100vh);opacity:0;}
+}
+
+/* No Button */
+#noBtn{position:absolute;}
+
+/* Celebration */
+#celebrate{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(#ff758c,#ff7eb3);
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    font-size:28px;
+    z-index:999;
+}
+</style>
+</head>
+
+<body>
+
+<!-- MUSIC -->
+<audio id="bgMusic" loop>
+<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
+</audio>
+
+<!-- QR SCREEN -->
+<div class="container" id="qrScreen">
+<h1>📱 Scan to Unlock My Heart 💖</h1>
+<p>Scan or click the QR to continue</p>
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=YOUR_LINK_HERE">
+<br><br>
+<button onclick="openPassword()">Continue 💌</button>
+</div>
+
+<!-- PASSWORD SCREEN -->
+<div class="container hidden" id="passwordScreen">
+<h1>🔐 Secret Valentine File</h1>
+<p>Enter the secret password 💖</p>
+<input type="password" id="password" placeholder="Password">
+<br><br>
+<button onclick="checkPassword()">Open 💌</button>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container hidden" id="mainContent">
+
+<h1>Happy Valentine's Day 💕</h1>
+
+<div class="card">
+<h2>💌 Love Letter</h2>
+<button onclick="toggle('letter')">Open 💌</button>
+<div id="letter" class="hidden letter">
+<textarea placeholder="Write your love letter here..."></textarea>
+</div>
+</div>
+
+<div class="card">
+<h2>📜 Day We Met</h2>
+<button onclick="toggle('met')">Open 📜</button>
+<div id="met" class="hidden letter">
+<textarea placeholder="Describe the day we met..."></textarea>
+</div>
+</div>
+
+<div class="card">
+<h2>📸 Our Memories</h2>
+<button onclick="toggle('memories')">Open 📸</button>
+<div id="memories" class="hidden">
+<input type="file" accept="image/*" multiple onchange="previewImages(event)">
+<div id="gallery"></div>
+</div>
+</div>
+
+<div class="card">
+<h2>💞 Love Journey Start</h2>
+<button onclick="toggle('journey')">Open 💞</button>
+<div id="journey" class="hidden">
+<input type="date">
+</div>
+</div>
+
+<div class="card">
+<h2>🌈 Our Dreams</h2>
+<button onclick="toggle('dreams')">Open 🌈</button>
+<div id="dreams" class="hidden letter">
+<textarea placeholder="Write dreams and future plans..."></textarea>
+</div>
+</div>
+
+<div class="card">
+<h2>💍 Will you be my Valentine?</h2>
+<button onclick="yesClick()">Yes 💖</button>
+<button id="noBtn" onmouseover="moveNo()">No 🙈</button>
+</div>
+
+</div>
+
+<!-- CELEBRATION -->
+<div id="celebrate">
+<h1>💍 She Said YES 💖</h1>
+<p>Forever starts now ✨</p>
+</div>
+
+<script>
+/* QR TO PASSWORD */
+function openPassword(){
+    qrScreen.classList.add("hidden");
+    passwordScreen.classList.remove("hidden");
+}
+
+/* SET PASSWORD FIRST TIME */
+let savedPassword = localStorage.getItem("valentinePassword");
+if(!savedPassword){
+    let newPass = prompt("Set your Valentine website password 💖");
+    if(newPass){
+        localStorage.setItem("valentinePassword", newPass);
+        alert("Password saved successfully 💕");
+    }
+}
+
+/* CHECK PASSWORD */
+function checkPassword(){
+    let inputPass = password.value;
+    let realPass = localStorage.getItem("valentinePassword");
+    if(inputPass === realPass){
+        passwordScreen.classList.add("hidden");
+        mainContent.classList.remove("hidden");
+        bgMusic.play();
+        setInterval(createHeart,400);
+    } else {
+        alert("Wrong password 💔 Try again");
+    }
+}
+
+function toggle(id){
+    document.getElementById(id).classList.toggle("hidden");
+}
+
+function previewImages(e){
+    gallery.innerHTML="";
+    [...e.target.files].slice(0,6).forEach(f=>{
+        let img=document.createElement("img");
+        img.src=URL.createObjectURL(f);
+        gallery.appendChild(img);
+    });
+}
+
+function moveNo(){
+    noBtn.style.left=Math.random()*80+"%";
+    noBtn.style.top=Math.random()*80+"%";
+}
+
+function yesClick(){
+    celebrate.style.display="flex";
+    for(let i=0;i<40;i++) createHeart();
+}
+
+function createHeart(){
+    let h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="❤️";
+    h.style.left=Math.random()*100+"vw";
+    h.style.fontSize=Math.random()*20+15+"px";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),5000);
+}
+
+/* AUTO SAVE */
+document.addEventListener("input",()=>{
+    document.querySelectorAll("textarea,input").forEach(el=>{
+        localStorage.setItem(el.placeholder||el.type,el.value);
+    });
+});
+
+window.onload=()=>{
+    document.querySelectorAll("textarea,input").forEach(el=>{
+        let v=localStorage.getItem(el.placeholder||el.type);
+        if(v) el.value=v;
+    });
+};
+</script>
+
+</body>
+</html>
